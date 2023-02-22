@@ -1,0 +1,31 @@
+.breadcrumb{
+    height: 45px;
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    background-color: rgb(50,53,68);
+}
+.breadcrumb a:hover{
+    text-decoration: underline !important;
+}
+
+.second-para{
+    line-height: 4px;
+}
+
+/* footersection */
+.Map{
+    background-color:rgb(50,53,68) ;
+    height: 370px;
+}
+.contact-form input,.contact-form textarea{
+ border: 1px solid rgba(255, 255, 255, 0.512) ;
+ color: rgba(255, 255, 255, 0.838);
+}
+.contact-form input::placeholder,.contact-form textarea::placeholder{
+    color:rgba(255, 255, 255, 0.47);
+}
+
+.contact-form input:focus,.contact-form textarea:focus{
+    color: rgba(255, 255, 255, 0.642);
+}

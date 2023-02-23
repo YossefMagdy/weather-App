@@ -14,7 +14,15 @@ let contact=document.getElementById("contact")
 let Month=monthNames[date.getMonth()]
 let Today=days[date.getDay()]
 let tomorrowday=days[date.getDay()+1]
-let After_tomorrow=days[date.getDay()+2]
+let After_tomorrow=null
+
+if(date.getDay()+2>days.length-1){
+  After_tomorrow=days[0]
+}
+else{
+  After_tomorrow=days[date.getDay()+2]
+}
+
 let LocationInfo=[]
 let CurrentWeath=[]
 let chanceofRain={}

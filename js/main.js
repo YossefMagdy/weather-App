@@ -1,54 +1,61 @@
 
-let date=new Date();
+let date = new Date();
 const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const monthNames = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"
 ];
 
-let CurrentDay=document.getElementById("CurrentDay")
-let tomForcast=document.getElementById("tomForcast")
-let AftertomForcast=document.getElementById("AftertomForcast")
-let search=document.getElementById("search")
-let contact=document.getElementById("contact")
+let CurrentDay = document.getElementById("CurrentDay")
+let tomForcast = document.getElementById("tomForcast")
+let AftertomForcast = document.getElementById("AftertomForcast")
+let search = document.getElementById("search")
+let contact = document.getElementById("contact")
 
-let Month=monthNames[date.getMonth()]
-let Today=days[date.getDay()]
-let tomorrowday=days[date.getDay()+1]
-let After_tomorrow=null
-
-if(date.getDay()+2>days.length-1){
-  After_tomorrow=days[0]
+let Month = monthNames[date.getMonth()]
+let Today = days[date.getDay()]
+let tomorrowday = null
+if (date.getDay() + 1 > days.length - 1) {
+  tomorrowday = days[0]
 }
-else{
-  After_tomorrow=days[date.getDay()+2]
+else {
+  tomorrowday = days[date.getDay() + 1]
 }
 
-let LocationInfo=[]
-let CurrentWeath=[]
-let chanceofRain={}
+let After_tomorrow = null
 
-let tomWeath=[];
-let tomWeath_mintemp=[];
-let AfterTomWeath=[]
-let AfterTomWeath_mintemp=[];
+if (date.getDay() + 2 > days.length - 1) {
+  After_tomorrow = days[0]
+}
+else {
+  After_tomorrow = days[date.getDay() + 2]
+}
 
-search.addEventListener("keyup",()=>{
+let LocationInfo = []
+let CurrentWeath = []
+let chanceofRain = {}
+
+let tomWeath = [];
+let tomWeath_mintemp = [];
+let AfterTomWeath = []
+let AfterTomWeath_mintemp = [];
+
+search.addEventListener("keyup", () => {
   getcurrentDay(search.value.toLowerCase())
   getTomWeth(search.value.toLowerCase())
   getAfterTomWeth(search.value.toLowerCase())
 })
 
-search.addEventListener("keyup",(el)=>{
-  
-  if(el.key=="Enter"){
+search.addEventListener("keyup", (el) => {
+
+  if (el.key == "Enter") {
     getcurrentDay(search.value.toLowerCase())
-  getTomWeth(search.value.toLowerCase())
-  getAfterTomWeth(search.value.toLowerCase()) 
+    getTomWeth(search.value.toLowerCase())
+    getAfterTomWeth(search.value.toLowerCase())
   }
-})  
+})
 
 
-function locationopen(){
+function locationopen() {
   getcurrentDay(search.value.toLowerCase())
   getTomWeth(search.value.toLowerCase())
   getAfterTomWeth(search.value.toLowerCase())
@@ -56,20 +63,20 @@ function locationopen(){
 
 
 
-contact.addEventListener("click",(el)=>{
-  window.open("Contact.html","_self")
+contact.addEventListener("click", (el) => {
+  window.open("Contact.html", "_self")
 })
 
-async function getcurrentDay(country){
-    let res=await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=1&aqi=yes&alerts=no`);
-    res=await res.json()
-    LocationInfo=res.location
-    CurrentWeath=res.current
-   chanceofRain=res.forecast.forecastday[0].day.daily_chance_of_rain;
-     CurrentDisplay()
+async function getcurrentDay(country) {
+  let res = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=1&aqi=yes&alerts=no`);
+  res = await res.json()
+  LocationInfo = res.location
+  CurrentWeath = res.current
+  chanceofRain = res.forecast.forecastday[0].day.daily_chance_of_rain;
+  CurrentDisplay()
 }
-function CurrentDisplay(){
-    temp=`
+function CurrentDisplay() {
+  temp = `
     <div class="p-3">
     <div class="days">
      <p class="float-start">${Today}</p>
@@ -98,127 +105,154 @@ function CurrentDisplay(){
  </div>
  </div>
     `;
-    CurrentDay.innerHTML=temp
+  CurrentDay.innerHTML = temp
 }
 getcurrentDay("Egypt")
 
-async function getTomWeth(country){
-  let res=await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=2&aqi=yes&alerts=no`);
-  res=await res.json()
-  tomWeath=res.forecast.forecastday
-  
-let makedata=date.getFullYear()
-if(date.getMonth()+1 < 10){
-  makedata+="-0"+(date.getMonth()+1)
-}
-else{
-  makedata=date.getMonth()+1
-}
-if(date.getDate()+1 < 10){
-  makedata+="-0"+(date.getDate()+1)
-}
-else{
-  makedata+="-"+(date.getDate()+1)
-}
-tomWeath=res.forecast.forecastday.filter((el)=>{
-  return el.date==makedata
-})
+async function getTomWeth(country) {
+  let res = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=2&aqi=yes&alerts=no`);
+  res = await res.json()
+  tomWeath = res.forecast.forecastday
 
-let time=makedata
-if(date.getHours() < 10){
-  time+=" "+"0"+date.getHours()+":00"
-}
-else{
-  time+=" "+date.getHours()+":00"
-}
-tomWeath_mintemp=tomWeath[0].day
+  let makedata = date.getFullYear()
+  if (date.getMonth() + 1 < 10) {
+    makedata += "-0" + (date.getMonth() + 1)
+  }
+  else {
+    makedata = date.getMonth() + 1
+  }
+  let data=new Date(tomWeath[0].date)
+  let d=new Date(data.getFullYear(),data.getMonth()+1,0)
 
-tomWeath=tomWeath[0].hour.filter((el)=>{
-  return el.time==time
-})
-tomWeath=tomWeath[0]
+  if (date.getDate() + 1 < 10) {
+    makedata += "-0" + (date.getDate() + 1)
+  }
+  else {
+    if(date.getDate()+1>=d.getDate()){
+      makedata += "-0" + (1)
+      console.log(makedata)
+    }
+    else{
+      makedata += "-" + (date.getDate() + 1)
+    }
+  }
+  tomWeath = res.forecast.forecastday.filter((el) => {
+    return el.date == makedata
+  })
+
+  let time = makedata
+  if (date.getHours() < 10) {
+    time += " " + "0" + date.getHours() + ":00"
+  }
+  else {
+    time += " " + date.getHours() + ":00"
+  }
+  tomWeath_mintemp = tomWeath[0].day
+
+  tomWeath = tomWeath[0].hour.filter((el) => {
+    return el.time == time
+  })
+  tomWeath = tomWeath[0]
 
   tomDisplay()
 }
-function tomDisplay(){
-  let temp=
-  `
+function tomDisplay() {
+  let temp =
+    `
   <div class="p-3">
                   <div class="days">
                     <p>${tomorrowday}</p>
                   </div>
                   <img src="https:${tomWeath.condition.icon}" class="mt-4" alt="">
                   <h2 class=" fs-2 mt-4 text-white">${tomWeath.temp_c
-                  }<sup>o</sup>C</h2>
+    }<sup>o</sup>C</h2>
                   <p class="text-white-50">${tomWeath_mintemp.mintemp_c
-                  }<sup>o</sup></p>
+    }<sup>o</sup></p>
                   <div class="situation">
                     <p >${tomWeath.condition.text}</p>
                    </div>
           </div>
   `
-  tomForcast.innerHTML=temp
+  tomForcast.innerHTML = temp
 }
 
 getTomWeth("Egypt")
 
-async function getAfterTomWeth(country){
-  let res=await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=3&aqi=yes&alerts=no`);
-  res=await res.json()
-  AfterTomWeath=res.forecast.forecastday
-let makedata=date.getFullYear()
-if(date.getMonth()+1 < 10){
-  makedata+="-0"+(date.getMonth()+1)
-}
-else{
-  makedata=date.getMonth()+1
-}
-if(date.getDate()+2 < 10){
-  makedata+="-0"+(date.getDate()+2)
-}
-else{
-  makedata+="-"+(date.getDate()+2)
-}
-AfterTomWeath=res.forecast.forecastday.filter((el)=>{
-  return el.date==makedata
-})
-let time=makedata
-if(date.getHours() < 10){
-  time+=" "+"0"+date.getHours()+":00"
-}
-else{
-  time+=" "+(date.getHours())+":00"
-}
+async function getAfterTomWeth(country) {
+  let res = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=3&aqi=yes&alerts=no`);
+  res = await res.json()
+  AfterTomWeath = res.forecast.forecastday
+  let makedata = date.getFullYear()
+  let data = new Date(AfterTomWeath[0].date)
 
-AfterTomWeath_mintemp=AfterTomWeath[0].day
+  
+  var d = new Date(data.getFullYear(), data.getMonth() + 1,0);
+  
 
-AfterTomWeath=AfterTomWeath[0].hour.filter((el)=>{
-  return el.time==time
-})
-AfterTomWeath=AfterTomWeath[0]
+  if (date.getMonth() + 1 < 10) {
+    makedata += "-0" + (date.getMonth() + 1)
+  }
+  else {
+    makedata = date.getMonth() + 1
+  }
+
+
+
+
+  if (date.getDate() + 2 < 10) {
+
+    makedata += "-0" + (date.getDate() + 2)
+
+  }
+  else {
+    if(date.getDate()+2>=d.getDate()){
+      makedata += "-0" + (2)
+    }
+    else{
+      makedata += "-" + (date.getDate() + 2)
+    }
+  }
+
+  AfterTomWeath = res.forecast.forecastday.filter((el) => {
+    return el.date == makedata
+  })
+  let time = makedata
+  if (date.getHours() < 10) {
+    time += " " + "0" + date.getHours() + ":00"
+  }
+  else {
+    time += " " + (date.getHours()) + ":00"
+  }
+
+  AfterTomWeath_mintemp = AfterTomWeath[0].day
+
+  AfterTomWeath = AfterTomWeath[0].hour.filter((el) => {
+    return el.time == time
+  })
+  AfterTomWeath = AfterTomWeath[0]
 
   AftertomDisplay()
 
 }
 
-function AftertomDisplay(){
-  let temp=
-  `
+function AftertomDisplay() {
+  let temp =
+    `
   <div class="p-3">
                   <div class="days">
                     <p>${After_tomorrow}</p>
                   </div>
                   <img src="https:${AfterTomWeath.condition.icon}" class="mt-4" alt="">
                   <h2 class=" fs-2 mt-4 text-white">${AfterTomWeath.temp_c
-                  }<sup>o</sup>C</h2>
+    }<sup>o</sup>C</h2>
                   <p class="text-white-50">${AfterTomWeath_mintemp.mintemp_c
-                  }<sup>o</sup></p>
+    }<sup>o</sup></p>
                   <div class="situation">
                     <p >${AfterTomWeath.condition.text}</p>
                    </div>
           </div>
   `
-  
-  AftertomForcast.innerHTML=temp
+
+  AftertomForcast.innerHTML = temp
 }
 getAfterTomWeth("egypt")

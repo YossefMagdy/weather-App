@@ -15,7 +15,7 @@ let Month = monthNames[date.getMonth()]
 let Today = days[date.getDay()]
 let tomorrowday = null
 if (date.getDay() + 1 > days.length - 1) {
-  tomorrowday = days[0]
+  tomorrowday = days[1]
 }
 else {
   tomorrowday = days[date.getDay() + 1]
@@ -24,11 +24,13 @@ else {
 let After_tomorrow = null
 
 if (date.getDay() + 2 > days.length - 1) {
-  After_tomorrow = days[0]
+  After_tomorrow = days[2]
 }
 else {
   After_tomorrow = days[date.getDay() + 2]
 }
+
+
 
 let LocationInfo = []
 let CurrentWeath = []
@@ -113,46 +115,18 @@ async function getTomWeth(country) {
   let res = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=2&aqi=yes&alerts=no`);
   res = await res.json()
   tomWeath = res.forecast.forecastday
+  tomWeath_mintemp = tomWeath[1].day
 
-  let makedata = date.getFullYear()
-  if (date.getMonth() + 1 < 10) {
-    makedata += "-0" + (date.getMonth() + 1)
-  }
-  else {
-    makedata = date.getMonth() + 1
-  }
-  let data=new Date(tomWeath[0].date)
-  let d=new Date(data.getFullYear(),data.getMonth()+1,0)
+  let time = new Date().getHours()
 
-  if (date.getDate() + 1 < 10) {
-    makedata += "-0" + (date.getDate() + 1)
-  }
-  else {
-    if(date.getDate()+1>=d.getDate()){
-      makedata += "-0" + (1)
-      console.log(makedata)
-    }
-    else{
-      makedata += "-" + (date.getDate() + 1)
-    }
-  }
-  tomWeath = res.forecast.forecastday.filter((el) => {
-    return el.date == makedata
+  tomWeath = tomWeath[1].hour.filter((el)=>{
+    
+    return el.time.includes(`${time}`)==true
   })
+  tomWeath=tomWeath[0]
 
-  let time = makedata
-  if (date.getHours() < 10) {
-    time += " " + "0" + date.getHours() + ":00"
-  }
-  else {
-    time += " " + date.getHours() + ":00"
-  }
-  tomWeath_mintemp = tomWeath[0].day
-
-  tomWeath = tomWeath[0].hour.filter((el) => {
-    return el.time == time
-  })
-  tomWeath = tomWeath[0]
+  
+  
 
   tomDisplay()
 }
@@ -182,54 +156,17 @@ async function getAfterTomWeth(country) {
   let res = await fetch(`http://api.weatherapi.com/v1/forecast.json?key=8d4ee5dff1234e3fad9163803232102&q=${country}&days=3&aqi=yes&alerts=no`);
   res = await res.json()
   AfterTomWeath = res.forecast.forecastday
+  AfterTomWeath_mintemp=AfterTomWeath[0].day
+  
   let makedata = date.getFullYear()
-  let data = new Date(AfterTomWeath[0].date)
-
+  let time = new Date().getHours()
   
-  var d = new Date(data.getFullYear(), data.getMonth() + 1,0);
+  AfterTomWeath = AfterTomWeath[2].hour.filter((el)=>{
+    
+    return el.time.includes(`${time}`)==true
+  })
+  AfterTomWeath=AfterTomWeath[0]
   
-
-  if (date.getMonth() + 1 < 10) {
-    makedata += "-0" + (date.getMonth() + 1)
-  }
-  else {
-    makedata = date.getMonth() + 1
-  }
-
-
-
-
-  if (date.getDate() + 2 < 10) {
-
-    makedata += "-0" + (date.getDate() + 2)
-
-  }
-  else {
-    if(date.getDate()+2>=d.getDate()){
-      makedata += "-0" + (2)
-    }
-    else{
-      makedata += "-" + (date.getDate() + 2)
-    }
-  }
-
-  AfterTomWeath = res.forecast.forecastday.filter((el) => {
-    return el.date == makedata
-  })
-  let time = makedata
-  if (date.getHours() < 10) {
-    time += " " + "0" + date.getHours() + ":00"
-  }
-  else {
-    time += " " + (date.getHours()) + ":00"
-  }
-
-  AfterTomWeath_mintemp = AfterTomWeath[0].day
-
-  AfterTomWeath = AfterTomWeath[0].hour.filter((el) => {
-    return el.time == time
-  })
-  AfterTomWeath = AfterTomWeath[0]
 
   AftertomDisplay()
 

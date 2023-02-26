@@ -15,7 +15,7 @@ let Month = monthNames[date.getMonth()]
 let Today = days[date.getDay()]
 let tomorrowday = null
 if (date.getDay() + 1 > days.length - 1) {
-  tomorrowday = days[1]
+  tomorrowday = days[0]
 }
 else {
   tomorrowday = days[date.getDay() + 1]
@@ -24,7 +24,7 @@ else {
 let After_tomorrow = null
 
 if (date.getDay() + 2 > days.length - 1) {
-  After_tomorrow = days[0]
+  After_tomorrow = days[1]
 }
 else {
   After_tomorrow = days[date.getDay() + 2]
